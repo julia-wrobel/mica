@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_cdf.R
 \name{estimate_cdf}
 \alias{estimate_cdf}
-\title{create labeled dataframe of vectorized voxel intensities for a list of nifti objects}
+\title{Calulate eCDF and downsample to regular grid}
 \usage{
 estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = FALSE,
   ...)
@@ -19,7 +19,6 @@ Defaults to \code{FALSE}.}
 \item{...}{Additional arguments passed to or from other functions.}
 }
 \description{
-Function used along with \code{mica::vectorize_image()} to vectorize images and place in a
-dataframe, where names for each image are drawn from the filepath of the
-image.
+Function used to calculate empirical CDF of images and downsample to a
+100-point grid of regularly-spaced intensity values.
 }

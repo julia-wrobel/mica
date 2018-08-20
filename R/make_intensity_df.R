@@ -5,9 +5,10 @@
 #' image.
 #'
 #' @param filepaths List of paths to where nifti objects are stored.
-#' @param sitenames List of character valued IDs for imaging site.
-#' @param scan_nos List of character valued IDs for scan number. If NULL, scan number will be assumed to be 1.
 #' @param ids List of unique identifiers for each image.
+#' @param sitenames List of character valued IDs for imaging site.
+#' @param scan_nos List of character valued IDs for scan number. If NULL, scan number will
+#' be assumed to be 1.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom purrr map2 map_df
@@ -20,22 +21,25 @@
 ##' filenames = paste0("../Documents/", filenames)
 ##' sitenames = lapply(filenames, function(f) substring(f, 64, 66))
 ##' scan_nos = lapply(filenames, function(f) substring(str_split(f, "Scan_")[[1]][2], 1, 1))
-##' ids = 1:14
+##' ids = paste(sitenames, scan_nos, sep = "_")
 ##'
-##' intensity_data = make_intensities_df(filenames, sitenames, scan_nos, ids)
+##' intensity_data = make_intensities_df(filenames, ids, sitenames, scan_nos)
 ##' }
 #'
 #' @return a data frame of vectorized images with columns \code{intensity}, \code{id},
 #' \code{site}, and \code{scan}, \code{cdf}.
 #' @export
 
-make_intensity_df <- function(filepaths, sitenames, scan_nos, ids, ...){
+make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL, ...){
 
-  # for testing filepaths, sitenames, scan_nos, ids should all have the same length and should be lists
-  #
+  # for testing filepaths, sitenames, scan_nos, ids should all have the same length and
+    #should be lists
+  # also test that if sitenames and scan_nos is null you don't through an error
+  if(is.null(sitenames)) sitenames = rep("site", length(filepaths))
+  if(is.null(scan_nos)) sitenames = rep("1", length(filepaths))
+
   site_scan_id = paste(sitenames, scan_nos, ids, sep = "_")
   intensities = map2(filepaths, site_scan_id, vectorize_image)
 
   intensities = map_df(intensities, rbind)
-  #mutate(intensities, cdf = )
 }
