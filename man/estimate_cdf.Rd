@@ -5,7 +5,7 @@
 \title{Calulate eCDF and downsample to regular grid}
 \usage{
 estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = FALSE,
-  ...)
+  white_stripe = FALSE, grid_length = 100, ...)
 }
 \arguments{
 \item{intensity_df}{Dataframe of vectorized intensity values.}
@@ -15,6 +15,10 @@ estimate warping functions. Needs to be chosen based on inspection of data.}
 
 \item{rescale_intensities}{If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
 Defaults to \code{FALSE}.}
+
+\item{white_stripe}{If \code{TRUE} image will be white stripe normalized}
+
+\item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }

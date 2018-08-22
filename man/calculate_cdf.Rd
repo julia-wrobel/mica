@@ -6,7 +6,10 @@
 \usage{
 calculate_cdf(data)
 }
+\arguments{
+\item{data}{A dataframe with column \code{intensity}.}
+}
 \description{
-Given a set of intensity values for an image, will interpolate the
+Given a dataset with intensity values for an image, will interpolate the
 empirical CDF to a new domain.
 }

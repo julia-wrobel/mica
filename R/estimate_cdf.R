@@ -8,6 +8,8 @@
 #' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
 #' Defaults to \code{FALSE}.
+#' @param white_stripe If \code{TRUE} image will be white stripe normalized
+#' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
@@ -16,7 +18,8 @@
 #' @importFrom magrittr %>%
 #'
 #' @export
-estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE, ...){
+estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE,
+                         white_stripe = FALSE, grid_length = 100, ...){
 
   if(rescale_intensities){ # if not whitestriping or if intensities are very different across images, rescale intensities so warping functions are identifiable
     intensity_df = intensity_df %>%
@@ -38,8 +41,8 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
     mutate(data = map(data, calculate_cdf))
 
   # downsample cdf to smaller, regular grid
-  cdf_mat = matrix(0, nrow = 100, ncol = dim(intensity_df)[1])
-  intensity_grid = seq(0, intensity_maximum, length.out = 100)
+  cdf_mat = matrix(0, nrow = grid_length, ncol = dim(intensity_df)[1])
+  intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
   for(i in 1:dim(intensity_df)[1]){
     cdf_mat[, i] = approx(intensity_df$data[[i]]$intensity,
                           intensity_df$data[[i]]$CDF,
