@@ -4,11 +4,14 @@
 \alias{map_to_mean}
 \title{create labeled dataframe of vectorized voxel intensities for a list of nifti objects}
 \usage{
-map_to_mean(filepaths, ids, intensity_maximum, rescale_intensities = FALSE,
-  white_stripe = FALSE, grid_length = 100, ...)
+map_to_mean(inpaths, outpath, ids, intensity_maximum,
+  rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
+  grid_length = 100, ...)
 }
 \arguments{
-\item{filepaths}{List of paths to where nifti objects are stored.}
+\item{inpaths}{List of paths to where nifti objects are stored.}
+
+\item{outpath}{Directory where mica normalized nifti objects will be stored}
 
 \item{ids}{List of unique identifiers for each image.}
 
@@ -19,6 +22,9 @@ estimate warping functions. Needs to be chosen based on inspection of data.}
 
 \item{white_stripe}{If \code{TRUE} image will be white stripe normalized
 before it is vectorized.}
+
+\item{type}{If \code{white_stripe = TRUE}, user must specify the type of image, from options
+\code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
 
 \item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
 

@@ -12,11 +12,13 @@
 #' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
 #' @param white_stripe If \code{TRUE} image will be white stripe normalized
 #' before it is vectorized.
+#' @param type If \code{white_stripe = TRUE}, user must specify the type of image, from options
+#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
-#' @importFrom purrr map2 map_df map
+#' @importFrom purrr map2 map_df map pmap
 #' @importFrom fdasrvf time_warping
 #' @importFrom tidyr nest unnest
 #' @importFrom magrittr %>%
@@ -40,8 +42,15 @@
 #' @export
 
 map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intensities = FALSE,
-                        white_stripe = FALSE, grid_length = 100, ...){
-  intensity_df = make_intensity_df(inpaths, ids)
+                        white_stripe = FALSE, type = NULL, grid_length = 100, ...){
+
+  if(white_stripe){
+    if(is.null(type)){
+      stop("Input type of image to whitestripe.")
+    }
+  }
+
+  intensity_df = make_intensity_df(inpaths, ids, white_stripe = white_stripe, type = type)
 
   intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
   cdfs = estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = rescale_intensities,
@@ -72,9 +81,20 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
            data = map2(data, short_data, upsample_hinv)) %>%
     select(-short_data)
 
+  # put back into white stripe space if this is part of it
+  # first check that white-striping doesn't make zero values non zero.
+    # if this is the case you'll have to do stuff a little differently
+  # also check that you're adding correctly! i don't think you are.
+  if(white_stripe){
+    intensity_df = intensity_df %>% mutate(h_inv = h_inv + min(intensity_ws))
+    intensity_df_short = intensity_df_short %>%
+      mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
+             h_inv = h_inv + min(intensity_df$intensity_ws))
+  }
 
   # last step is normalizing the niftis themselves
-  # make sure you're actually doing this right
+  hinv_ls = list(as.list(inpaths), as.list(ids), intensity_df$data)
+  image_norm = pmap(hinv_ls, .f = normalize_image, outpath = outpath)
 
-
-} # end function
+  return(list(long_data = intensity_df, short_data = intensity_df_short))
+}
