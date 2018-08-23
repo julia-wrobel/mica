@@ -18,12 +18,12 @@ map_to_mean(inpaths, outpath, ids, intensity_maximum,
 \item{intensity_maximum}{Maximum value of intensity for creating grid over which to evaluate CDF and
 estimate warping functions. Needs to be chosen based on inspection of data.}
 
-\item{rescale_intensities}{If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.}
+\item{rescale_intensities}{If \code{TRUE}, intensities will be rescaled by their 99.9 percent quantile.}
 
 \item{white_stripe}{If \code{TRUE} image will be white stripe normalized
 before it is vectorized.}
 
-\item{type}{If \code{white_stripe = TRUE}, user must specify the type of image, from options
+\item{type}{If white_stripe = TRUE, user must specify the type of image, from options
 \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
 
 \item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}

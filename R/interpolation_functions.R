@@ -10,7 +10,7 @@
 
 calculate_cdf <- function(data){
   intensities = data$intensity
-  data$CDF = ecdf(intensities)(intensities)
+  data$cdf = ecdf(intensities)(intensities)
   data
 }
 
@@ -48,8 +48,7 @@ inverse_warps = function(data){
 #' @export
 upsample_hinv = function(long_data, short_data){
   long_data$h_inv = approx(short_data$intensity, short_data$h_inv,
-                           xout = long_data$intensity)$y
+                           xout = long_data$intensity, rule = 2)$y
 
   long_data
 }
-

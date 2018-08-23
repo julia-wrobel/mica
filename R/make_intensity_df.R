@@ -9,9 +9,14 @@
 #' @param sitenames List of character valued IDs for imaging site.
 #' @param scan_nos List of character valued IDs for scan number. If NULL, scan number will
 #' be assumed to be 1.
+#' @param white_stripe If \code{TRUE} image will be white stripe normalized
+#' before it is vectorized
+#' @param type If \code{white_stripe = TRUE}, user must specify the type of image, from options
+#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom purrr map2 map_df
+#' @importFrom tibble as.tibble
 #'
 #' @author Julia Wrobel \email{jw3134@@cumc.columbia.edu}
 #'
@@ -30,7 +35,8 @@
 #' \code{site}, and \code{scan}, \code{cdf}.
 #' @export
 
-make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL, ...){
+make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL,
+                              white_stripe = FALSE, type = NULL, ...){
 
   # for testing filepaths, sitenames, scan_nos, ids should all have the same length and
     #should be lists
@@ -39,7 +45,10 @@ make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL,
   if(is.null(scan_nos)) sitenames = rep("1", length(filepaths))
 
   site_scan_id = paste(sitenames, scan_nos, ids, sep = "_")
-  intensities = map2(filepaths, site_scan_id, vectorize_image)
+  intensities = map2(filepaths, site_scan_id, vectorize_image,
+                     white_stripe = white_stripe, type = type)
 
   intensities = map_df(intensities, rbind)
+
+  as.tibble(intensities)
 }

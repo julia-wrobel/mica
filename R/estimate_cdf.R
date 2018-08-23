@@ -51,7 +51,7 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
   intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
   for(i in 1:dim(intensity_df)[1]){
     cdf_mat[, i] = approx(intensity_df$data[[i]]$intensity,
-                          intensity_df$data[[i]]$CDF,
+                          intensity_df$data[[i]]$cdf,
                           xout = intensity_grid, rule = 2)$y
   }
   ls = list(intensity_df = intensity_df, cdf_mat = cdf_mat)

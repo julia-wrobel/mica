@@ -9,10 +9,10 @@
 #' @param ids List of unique identifiers for each image.
 #' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
 #' estimate warping functions. Needs to be chosen based on inspection of data.
-#' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
+#' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9 percent quantile.
 #' @param white_stripe If \code{TRUE} image will be white stripe normalized
 #' before it is vectorized.
-#' @param type If \code{white_stripe = TRUE}, user must specify the type of image, from options
+#' @param type If white_stripe = TRUE, user must specify the type of image, from options
 #' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
@@ -54,7 +54,8 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
 
   intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
   cdfs = estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = rescale_intensities,
-                      white_stripe = white_stripe, grid_length = grid_length)
+                      white_stripe = white_stripe, type = type,
+                      grid_length = grid_length)
 
   intensity_df = cdfs$intensity_df
 
@@ -81,15 +82,19 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
            data = map2(data, short_data, upsample_hinv)) %>%
     select(-short_data)
 
-  # put back into white stripe space if this is part of it
-  # first check that white-striping doesn't make zero values non zero.
-    # if this is the case you'll have to do stuff a little differently
-  # also check that you're adding correctly! i don't think you are.
   if(white_stripe){
-    intensity_df = intensity_df %>% mutate(h_inv = h_inv + min(intensity_ws))
+    intensity_df = intensity_df %>%
+      unnest(data) %>%
+      mutate(h_inv = h_inv + min(intensity_ws))
+
     intensity_df_short = intensity_df_short %>%
+      unnest(data) %>%
       mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
-             h_inv = h_inv + min(intensity_df$intensity_ws))
+             h_inv = h_inv + min(intensity_df$intensity_ws)) %>%
+      nest(-id, -site, -scan)
+
+    intensity_df = intensity_df %>% nest(-id, -site, -scan)
+
   }
 
   # last step is normalizing the niftis themselves

@@ -21,7 +21,8 @@
 #' @return a data frame with a single vectorized image.
 #' @export
 
-vectorize_image <- function(filepath, site_scan_id = NULL, white_stripe = FALSE, type = NULL, ...){
+vectorize_image <- function(filepath, site_scan_id = NULL,
+                            white_stripe = FALSE, type = NULL, ...){
   nifti_object = readnii(filepath)
 
   if(white_stripe){
