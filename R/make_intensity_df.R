@@ -42,7 +42,7 @@ make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL,
     #should be lists
   # also test that if sitenames and scan_nos is null you don't through an error
   if(is.null(sitenames)) sitenames = rep("site", length(filepaths))
-  if(is.null(scan_nos)) sitenames = rep("1", length(filepaths))
+  if(is.null(scan_nos)) scan_nos = rep("1", length(filepaths))
 
   site_scan_id = paste(sitenames, scan_nos, ids, sep = "_")
   intensities = map2(filepaths, site_scan_id, vectorize_image,

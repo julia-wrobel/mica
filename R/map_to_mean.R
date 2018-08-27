@@ -1,8 +1,7 @@
-#' create labeled dataframe of vectorized voxel intensities for a list of nifti objects
+#' Normalize a set of niftis to their Karcher mean
 #'
-#' Function used along with \code{mica::vectorize_image()} to vectorize images and place in a
-#' dataframe, where names for each image are drawn from the filepath of the
-#' image.
+#' This function reads in filepaths for a set of niftis and outputs mica-normalized niftis to a specified folder.
+#' Also returns dataframes of vectorized niftis and warping functions.
 #'
 #' @param inpaths List of paths to where nifti objects are stored.
 #' @param outpath Directory where mica normalized nifti objects will be stored
@@ -60,7 +59,8 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
   intensity_df = cdfs$intensity_df
 
   # estimate warping
-  srvf_obj = suppressMessages(time_warping(cdfs$cdf_mat, time = intensity_grid, showplot = FALSE))
+  srvf_obj = suppressMessages(time_warping(cdfs$cdf_mat, time = intensity_grid,
+                                           showplot = FALSE))
 
   intensity_df_short = tibble(
     id = rep(cdfs$intensity_df$id, each = grid_length),

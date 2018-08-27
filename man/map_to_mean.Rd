@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_to_mean.R
 \name{map_to_mean}
 \alias{map_to_mean}
-\title{create labeled dataframe of vectorized voxel intensities for a list of nifti objects}
+\title{Normalize a set of niftis to their Karcher mean}
 \usage{
 map_to_mean(inpaths, outpath, ids, intensity_maximum,
   rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
@@ -35,9 +35,8 @@ a data frame of vectorized images with columns \code{intensity}, \code{id},
 \code{site}, and \code{scan}, \code{cdf}.
 }
 \description{
-Function used along with \code{mica::vectorize_image()} to vectorize images and place in a
-dataframe, where names for each image are drawn from the filepath of the
-image.
+This function reads in filepaths for a set of niftis and outputs mica-normalized niftis to a specified folder.
+Also returns dataframes of vectorized niftis and warping functions.
 }
 \examples{
 \dontrun{

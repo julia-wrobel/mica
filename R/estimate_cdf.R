@@ -23,6 +23,7 @@
 estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE,
                          white_stripe = FALSE, type = NULL, grid_length = 100, ...){
 
+  # test that length of intensity_maximum is either 1 or length of unique ids
   if(rescale_intensities){ # if not whitestriping or if intensities are very different across images, rescale intensities so warping functions are identifiable
     intensity_df = intensity_df %>%
       group_by(id) %>%
@@ -42,19 +43,28 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
              intensity = intensity - min(intensity))
   }
 
+
+
   intensity_df = intensity_df %>%
     nest(-id, -site, -scan) %>%
     mutate(data = map(data, calculate_cdf))
 
   # downsample cdf to smaller, regular grid
-  cdf_mat = matrix(0, nrow = grid_length, ncol = dim(intensity_df)[1])
-  intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
+  cdf_mat = intensity_mat = matrix(0, nrow = grid_length, ncol = dim(intensity_df)[1])
+
   for(i in 1:dim(intensity_df)[1]){
+    if(length(intensity_maximum) > 1){
+      intensity_grid = seq(0, intensity_maximum[i], length.out = grid_length)
+    }else{
+      intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
+    }
     cdf_mat[, i] = approx(intensity_df$data[[i]]$intensity,
                           intensity_df$data[[i]]$cdf,
                           xout = intensity_grid, rule = 2)$y
+
+    intensity_mat[, i] = intensity_grid
   }
-  ls = list(intensity_df = intensity_df, cdf_mat = cdf_mat)
+  ls = list(intensity_df = intensity_df, cdf_mat = cdf_mat, intensity_mat = intensity_mat)
 
   return(ls)
 }
