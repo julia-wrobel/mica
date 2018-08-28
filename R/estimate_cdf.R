@@ -31,6 +31,11 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
              intensity_raw = intensity,
              intensity = intensity * intensity_maximum / quantile99) %>%
       ungroup()
+    # intensity_df = intensity_df %>%
+    #   group_by(id) %>%
+    #   mutate(intensity_raw = intensity,
+    #          intensity = intensity * intensity_max / max(intensity)) %>%
+    #   ungroup()
   }
 
   if(white_stripe){

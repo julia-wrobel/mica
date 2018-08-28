@@ -48,7 +48,9 @@ inverse_warps = function(data){
 #' @export
 upsample_hinv = function(long_data, short_data){
   long_data$h_inv = approx(short_data$intensity, short_data$h_inv,
-                           xout = long_data$intensity, rule = 2)$y
+                           xout = long_data$intensity,
+                           yleft = 0,
+                           yright = max(short_data$h_inv))$y
 
   long_data
 }

@@ -94,7 +94,6 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
       nest(-id, -site, -scan)
 
     intensity_df = intensity_df %>% nest(-id, -site, -scan)
-
   }
 
   # last step is normalizing the niftis themselves

@@ -17,7 +17,7 @@
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
-#' @importFrom purrr map
+#' @importFrom purrr map map2 pmap
 #' @importFrom fdasrvf pair_align_functions
 #' @importFrom tidyr nest unnest gather spread
 #' @importFrom magrittr %>%
@@ -43,11 +43,21 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
   intensity_df = make_intensity_df(inpaths, ids, white_stripe = white_stripe,
                                    type = type, sitenames = scanner)
 
-  intensity_maxima = intensity_df %>%
-    filter(site == map_to) %>% group_by(id) %>%
-    summarize(intensity_max = max(intensity)) %>% ungroup() %>% pull(intensity_max)
+  # add intensity_maxima to the dataset
+  # intensity_maxima = intensity_df %>%
+  #   group_by(id, site) %>%
+  #   summarize(intensity_max = max(intensity)) %>%
+  #   filter(site == map_to) %>% select(-site)
 
-  intensity_maxima = rep(intensity_maxima, each = 2)
+  #intensity_df  = left_join(intensity_df, intensity_maxima)
+  #intensity_maxima = rep(unique(intensity_df$intensity_max), each = 2)
+
+  intensity_maxima = intensity_df %>%
+    group_by(id, site) %>%
+    summarize(intensity_max = max(intensity)) %>%
+    filter(site == map_to) %>% select(-site) %>%
+    pull(intensity_max)
+  intensity_maxima = rep(unique(intensity_maxima), each = 2)
 
   cdfs = estimate_cdf(intensity_df, intensity_maximum = intensity_maxima,
                       rescale_intensities = FALSE,
@@ -76,6 +86,7 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
     gam[,i] = warp_obj$gam
   }
 
+  # identify mapping labels correctly
   which_map_to = which(sort(unique(scanner)) == map_to)
 
   intensity_df_short = intensity_df_short %>% unnest()
@@ -84,14 +95,44 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
   intensity_df_short[[map_from]] = if(which_map_to == 2) {
     intensity_df_short$cdf}else{intensity_df_short$cdf1}
 
+  # calculate inverse warping functions
   intensity_df_short = intensity_df_short %>%
     select(-cdf, -cdf1, -intensity1) %>% # intensities are the same for both scanners
     mutate(gam = as.vector(gam)) %>%
     nest(-id) %>%
     mutate(data = map(data, inverse_warps)) %>%
     unnest() %>%
-    gather(scanner, cdf, map_to:map_from)
+    gather(site, cdf, map_to:map_from) %>%
+    nest(-id, -site) %>% arrange(id, site)
 
-  intensity_df_short
+  # upsample inverse warping functions
+  intensity_df = intensity_df %>%
+    mutate(short_data = intensity_df_short$data,
+           data = map2(data, short_data, upsample_hinv)) %>%
+    select(-short_data) %>% arrange(id, site)
+
+  if(white_stripe){
+    intensity_df = intensity_df %>%
+      unnest(data) %>%
+      mutate(h_inv = h_inv + min(intensity_ws))
+
+    intensity_df_short = intensity_df_short %>%
+      unnest(data) %>%
+      mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
+             h_inv = h_inv + min(intensity_df$intensity_ws)) %>%
+      nest(-id, -site, -scan)
+
+    intensity_df = intensity_df %>% nest(-id, -site, -scan)
+  }
+
+  # last step is normalizing the niftis themselves
+  map_from_inpaths = inpaths[which(scanner != map_to)]
+  map_from_ids = unique(ids)
+  map_from_df = intensity_df %>% filter(site != map_to)
+
+  hinv_ls = list(as.list(map_from_inpaths), as.list(map_from_ids), map_from_df$data)
+  image_norm = pmap(hinv_ls, .f = normalize_image, outpath = outpath)
+
+  return(list(long_data = intensity_df, short_data = intensity_df_short))
 
 } # end function
