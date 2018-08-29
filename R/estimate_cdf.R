@@ -18,6 +18,7 @@
 #' @importFrom tidyr nest unnest
 #' @importFrom purrr map
 #' @importFrom magrittr %>%
+#' @importFrom stats quantile
 #'
 #' @export
 estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE,
@@ -47,8 +48,6 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
       mutate(intensity_ws = intensity,
              intensity = intensity - min(intensity))
   }
-
-
 
   intensity_df = intensity_df %>%
     nest(-id, -site, -scan) %>%

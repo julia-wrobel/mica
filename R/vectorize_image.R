@@ -37,6 +37,7 @@ vectorize_image <- function(filepath, site_scan_id = NULL,
   df$id = strsplit(site_scan_id, "_")[[1]][3]
   df$site = strsplit(site_scan_id, "_")[[1]][1]
   df$scan = strsplit(site_scan_id, "_")[[1]][2]
+  df$voxel_position = row.names(df)
 
   filter(df, intensity > min(intensity))
 }

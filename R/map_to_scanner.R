@@ -57,7 +57,7 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
     summarize(intensity_max = max(intensity)) %>%
     filter(site == map_to) %>% select(-site) %>%
     pull(intensity_max)
-  intensity_maxima = rep(unique(intensity_maxima), each = 2)
+  intensity_maxima = rep(intensity_maxima, each = 2)
 
   cdfs = estimate_cdf(intensity_df, intensity_maximum = intensity_maxima,
                       rescale_intensities = FALSE,
@@ -71,7 +71,7 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
                             cdf = as.vector(cdfs$cdf_mat),
                             intensity = as.vector(cdfs$intensity_mat))
 
-  intensity_df_short = intensity_df_short %>% nest(cdf, intensity) %>%
+  intensity_df_short = intensity_df_short %>% nest(-id, -site) %>%
     spread(site, data)
 
   # estimate warping
