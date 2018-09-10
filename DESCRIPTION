@@ -4,8 +4,7 @@ Title: Multi Image CDF Alignment (or multi site intensity normalization by cdf a
 Version: 0.1.0
 Author: c(person("Julia", "Wrobel", role = c("aut", "cre"), email = "jw3134@cumc.columbia.edu"))
 Maintainer: Julia Wrobel <jw3134@cumc.columbia.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: An R package for within-subject intensity normalization.
 Depends:
     R (>= 3.2)
 Imports:
