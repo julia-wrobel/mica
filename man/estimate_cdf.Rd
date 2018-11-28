@@ -4,8 +4,9 @@
 \alias{estimate_cdf}
 \title{Calulate eCDF and downsample to regular grid}
 \usage{
-estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = FALSE,
-  white_stripe = FALSE, type = NULL, grid_length = 100, ...)
+estimate_cdf(intensity_df, intensity_maximum,
+  rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
+  grid_length = 100, ...)
 }
 \arguments{
 \item{intensity_df}{Dataframe of vectorized intensity values.}
@@ -27,5 +28,5 @@ Defaults to \code{FALSE}.}
 }
 \description{
 Function used to calculate empirical CDF of images and downsample to a
-100-point grid of regularly-spaced intensity values.
+grid of regularly-spaced intensity values.
 }

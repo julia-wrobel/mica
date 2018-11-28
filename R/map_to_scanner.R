@@ -7,6 +7,8 @@
 #' @param outpath Directory where mica normalized nifti objects will be stored.
 #' @param ids List of unique identifiers for each subject.
 #' @param scanner Scanner on which each image was collected. Should be character vector same length as ids.
+#' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
+#' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param map_from Character, name of scanner from which images will be mapped.
 #' @param map_to Character, name of scanner to which images will be mapped.
 #' @param white_stripe If \code{TRUE} image will be white stripe normalized
@@ -26,7 +28,7 @@
 #' @author Julia Wrobel \email{jw3134@@cumc.columbia.edu}
 #' @export
 
-map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
+map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = NULL, map_from, map_to,
                            white_stripe = FALSE, type = NULL, grid_length = 100, ...){
 
   # can only warp from one scanner to another - not from multiple scanners to another
@@ -51,15 +53,16 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
 
   #intensity_df  = left_join(intensity_df, intensity_maxima)
   #intensity_maxima = rep(unique(intensity_df$intensity_max), each = 2)
+  if(is.null(intensity_maximum)){
+    intensity_maximum = intensity_df %>%
+      group_by(id, site) %>%
+      summarize(intensity_max = max(intensity)) %>%
+      filter(site == map_to) %>% select(-site) %>%
+      pull(intensity_max)
+    intensity_maximum = rep(intensity_maximum, each = 2)
+  }
 
-  intensity_maxima = intensity_df %>%
-    group_by(id, site) %>%
-    summarize(intensity_max = max(intensity)) %>%
-    filter(site == map_to) %>% select(-site) %>%
-    pull(intensity_max)
-  intensity_maxima = rep(intensity_maxima, each = 2)
-
-  cdfs = estimate_cdf(intensity_df, intensity_maximum = intensity_maxima,
+  cdfs = estimate_cdf(intensity_df, intensity_maximum,
                       rescale_intensities = FALSE,
                       white_stripe = white_stripe, type = type,
                       grid_length = grid_length)

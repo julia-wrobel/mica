@@ -1,7 +1,7 @@
 #' Calulate eCDF and downsample to regular grid
 #'
 #' Function used to calculate empirical CDF of images and downsample to a
-#' 100-point grid of regularly-spaced intensity values.
+#' grid of regularly-spaced intensity values.
 #'
 #' @param intensity_df Dataframe of vectorized intensity values.
 #' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and

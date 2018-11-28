@@ -4,8 +4,9 @@
 \alias{map_to_scanner}
 \title{Map niftis from one scanner to another}
 \usage{
-map_to_scanner(inpaths, outpath, ids, scanner, map_from, map_to,
-  white_stripe = FALSE, type = NULL, grid_length = 100, ...)
+map_to_scanner(inpaths, outpath, ids, scanner, intensity_maximum = NULL,
+  map_from, map_to, white_stripe = FALSE, type = NULL,
+  grid_length = 100, ...)
 }
 \arguments{
 \item{inpaths}{List of paths to where nifti objects are stored.}
@@ -15,6 +16,9 @@ map_to_scanner(inpaths, outpath, ids, scanner, map_from, map_to,
 \item{ids}{List of unique identifiers for each subject.}
 
 \item{scanner}{Scanner on which each image was collected. Should be character vector same length as ids.}
+
+\item{intensity_maximum}{Maximum value of intensity for creating grid over which to evaluate CDF and
+estimate warping functions. Needs to be chosen based on inspection of data.}
 
 \item{map_from}{Character, name of scanner from which images will be mapped.}
 
