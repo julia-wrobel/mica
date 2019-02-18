@@ -123,7 +123,7 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = N
       unnest(data) %>%
       mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
              h_inv = h_inv + min(intensity_df$intensity_ws)) %>%
-      nest(-id, -site, -scan)
+      nest(-id, -site)
 
     intensity_df = intensity_df %>% nest(-id, -site, -scan)
   }
