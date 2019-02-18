@@ -1,4 +1,4 @@
-#' Calulate eCDF and downsample to regular grid
+#' Calulate eCDF and downsample to regular grid.
 #'
 #' Function used to calculate empirical CDF of images and downsample to a
 #' grid of regularly-spaced intensity values.

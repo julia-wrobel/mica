@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_cdf.R
 \name{estimate_cdf}
 \alias{estimate_cdf}
-\title{Calulate eCDF and downsample to regular grid}
+\title{Calulate eCDF and downsample to regular grid.}
 \usage{
 estimate_cdf(intensity_df, intensity_maximum,
   rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
