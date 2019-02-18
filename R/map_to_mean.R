@@ -1,4 +1,4 @@
-#' Normalize a set of niftis to their Karcher mean
+#' Normalize a set of niftis to their Karcher mean.
 #'
 #' This function reads in filepaths for a set of niftis and outputs mica-normalized niftis to a specified folder.
 #' Also returns dataframes of vectorized niftis and warping functions.
