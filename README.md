@@ -1,5 +1,5 @@
 # mica
-Multi Image CDF Alignment
+mica: Multi Image CDF Alignment. Editing some more stuff here. Mica has a different name now.
 
 
 [![Travis-CI Build Status](https://travis-ci.org/julia-wrobel/mica.svg?branch=master)](https://travis-ci.org/julia-wrobel/mica)
