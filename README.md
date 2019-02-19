@@ -1,5 +1,6 @@
 # mica
-Multisite Image Harmonization by CDF Alignment
+
+mica: Multisite Image Harmonization by CDF Alignment. Package for stuff.
 
 ### Installation
 
