@@ -1,5 +1,6 @@
 # mica
-Multisite Image Harmonization by CDF Alignment. Let's break this.
+
+mica: Multisite Image Harmonization by CDF Alignment.
 
 ### Installation
 
@@ -11,6 +12,7 @@ To install the latest version directly from Github, please use:
 install.packages("devtools")
 devtools::install_github("julia-wrobel/mica")
 ```
+
 
 
 
