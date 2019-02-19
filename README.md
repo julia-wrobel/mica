@@ -1,5 +1,5 @@
 # mica
-Multisite Image Harmonization by CDF Alignment
+Multisite Image Harmonization by CDF Alignment. Let's break this.
 
 ### Installation
 
