@@ -1,5 +1,17 @@
 # mica
-Multi-Image CDF Alignment
+Multisite Image Harmonization by CDF Alignment
+
+### Installation
+
+----------------
+
+To install the latest version directly from Github, please use:
+
+```{r, eval=FALSE, echo = TRUE}
+install.packages("devtools")
+devtools::install_github("julia-wrobel/mica")
+```
+
 
 
 [![Travis-CI Build Status](https://travis-ci.org/julia-wrobel/mica.svg?branch=master)](https://travis-ci.org/julia-wrobel/mica)
