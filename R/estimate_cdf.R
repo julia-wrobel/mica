@@ -21,8 +21,10 @@
 #' @importFrom stats quantile
 #'
 #' @export
-estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE,
-                         white_stripe = FALSE, type = NULL, grid_length = 100, ...){
+estimate_cdf <- function(intensity_df, intensity_maximum = NULL, rescale_intensities = FALSE,
+                         grid_length = 100, ...){
+
+### automatically determine intensity_maximum
 
   # test that length of intensity_maximum is either 1 or length of unique ids
   if(rescale_intensities){ # if not whitestriping or if intensities are very different across images, rescale intensities so warping functions are identifiable
@@ -39,11 +41,7 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
     #   ungroup()
   }
 
-  if(white_stripe){
-    if(is.null(type)){
-      stop("Input type of image to whitestripe.")
-    }
-
+  if(min(intensity_df$intensity)<0){
     intensity_df = intensity_df %>%
       mutate(intensity_ws = intensity,
              intensity = intensity - min(intensity))

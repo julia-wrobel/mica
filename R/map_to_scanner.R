@@ -1,19 +1,19 @@
-#' Map niftis from one scanner to another
+#' Map NIfTIs from one scanner to another
 #'
-#' This function reads in filepaths for a set of niftis from two scanners and maps niftis from one scanner to the
+#' This function reads in filepaths for a set of NIfTIs from two scanners and maps NIfTIs from one scanner to the
 #' other.
 #'
-#' @param inpaths List of paths to where nifti objects are stored.
-#' @param outpath Directory where mica normalized nifti objects will be stored.
-#' @param ids List of unique identifiers for each subject.
-#' @param scanner Scanner on which each image was collected. Should be character vector same length as ids.
+#' @param inpaths List of paths to where NIfTI objects are stored.
+#' @param outpath Character, directory where mica normalized NIfTI objects will be stored.
+#' @param ids List of unique identifiers for each subject. Should be character vector same length as inpaths.
+#' @param scanner Scanner on which each image was collected. Should be character vector same length as inpaths.
 #' @param map_from Character, name of scanner from which images will be mapped.
 #' @param map_to Character, name of scanner to which images will be mapped.
 #' @param white_stripe If \code{TRUE} image will be white stripe normalized
 #' before it is vectorized.
 #' @param type If white_stripe = TRUE, user must specify the type of image, from options
 #' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
-#' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
+#' @param grid_length Numeric, length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
@@ -32,11 +32,16 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
   # can only warp from one scanner to another - not from multiple scanners to another
   # test that map to and map from variables are same as in scanner variable
 
+# check that inpaths, ids, and scanner are same length
+  if(length(inpaths)!=length(ids) | length(inpaths)!=length(scanner)){
+    stop("inpaths, ids, and scanner must be character vectors of same length")
+  }
+
   num_subjs = length(unique(ids))
 
   if(white_stripe){
     if(is.null(type)){
-      stop("Input type of image to whitestripe.")
+      stop("Input type of image to whitestripe")
     }
   }
 
@@ -125,7 +130,7 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, map_from, map_to,
     intensity_df = intensity_df %>% nest(-id, -site, -scan)
   }
 
-  # last step is normalizing the niftis themselves
+  # last step is normalizing the NIfTIs themselves
   map_from_inpaths = inpaths[which(scanner != map_to)]
   map_from_ids = unique(ids)
   map_from_df = intensity_df %>% filter(site != map_to)

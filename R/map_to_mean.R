@@ -1,19 +1,20 @@
-#' Normalize a set of niftis to their Karcher mean
+#' Normalize a set of NIfTIs to their Karcher mean
 #'
-#' This function reads in filepaths for a set of niftis and outputs mica-normalized niftis to a specified folder.
-#' Also returns dataframes of vectorized niftis and warping functions.
+#' This function reads in filepaths for a set of NIfTIs and outputs mica-normalized NIfTIs to a specified folder.
+#' Also returns data frames of vectorized NIfTIs and warping functions.
 #'
-#' @param inpaths List of paths to where nifti objects are stored.
-#' @param outpath Directory where mica normalized nifti objects will be stored
-#' @param ids List of unique identifiers for each image.
+#' @param inpaths List of paths to where NIfTI objects are stored.
+#' @param outpath Character, directory where mica normalized NIfTI objects will be stored.
+#' @param ids List of unique identifiers for each image. Should be character vector same length as inpaths.
 #' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
 #' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9 percent quantile.
+#' @param normalized \code{TRUE} if image was previously intensity normalized, \code{FALSE} otherwise
 #' @param white_stripe If \code{TRUE} image will be white stripe normalized
 #' before it is vectorized.
 #' @param type If white_stripe = TRUE, user must specify the type of image, from options
 #' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
-#' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
+#' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
@@ -40,16 +41,32 @@
 #' \code{site}, and \code{scan}, \code{cdf}.
 #' @export
 
-map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intensities = FALSE,
+map_to_mean <- function(inpaths, outpath, ids, intensity_maximum = NULL, rescale_intensities = FALSE,
                         white_stripe = FALSE, type = NULL, grid_length = 100, ...){
-
+                            
+# check that inpaths and ids are same length
+    if(length(inpaths)!=length(ids)){
+        stop("inpaths and ids must be character vectors of same length")
+    }
+    
   if(white_stripe){
     if(is.null(type)){
-      stop("Input type of image to whitestripe.")
+      stop("Input type of image to white stripe")
     }
   }
 
   intensity_df = make_intensity_df(inpaths, ids, white_stripe = white_stripe, type = type)
+
+##### AUTOMATICALLY DETERMINE intensity_maximum for both normalized and non-normalized images
+# this may have to go after next if statement
+
+
+## fix intensity_grid -- normalized images will have intensities less than 0
+##  if(min(intensity_df$intensity)<0){
+##    intensity_df = intensity_df %>%
+##        mutate(intensity_normal = intensity,
+##            intensity = intensity - min(intensity))
+##}
 
   intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
   cdfs = estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = rescale_intensities,
@@ -96,7 +113,7 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
     intensity_df = intensity_df %>% nest(-id, -site, -scan)
   }
 
-  # last step is normalizing the niftis themselves
+  # last step is normalizing the NIfTIs themselves
   hinv_ls = list(as.list(inpaths), as.list(ids), intensity_df$data)
   image_norm = pmap(hinv_ls, .f = normalize_image, outpath = outpath)
 

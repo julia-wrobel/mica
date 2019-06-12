@@ -4,8 +4,8 @@
 \alias{estimate_cdf}
 \title{Calulate eCDF and downsample to regular grid}
 \usage{
-estimate_cdf(intensity_df, intensity_maximum, rescale_intensities = FALSE,
-  white_stripe = FALSE, type = NULL, grid_length = 100, ...)
+estimate_cdf(intensity_df, intensity_maximum = NULL,
+  rescale_intensities = FALSE, grid_length = 100, ...)
 }
 \arguments{
 \item{intensity_df}{Dataframe of vectorized intensity values.}
@@ -16,14 +16,14 @@ estimate warping functions. Needs to be chosen based on inspection of data.}
 \item{rescale_intensities}{If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
 Defaults to \code{FALSE}.}
 
+\item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
+
+\item{...}{Additional arguments passed to or from other functions.}
+
 \item{white_stripe}{If \code{TRUE} image will be white stripe normalized}
 
 \item{type}{If \code{white_stripe = TRUE}, user must specify the type of image, from options
 \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
-
-\item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
-
-\item{...}{Additional arguments passed to or from other functions.}
 }
 \description{
 Function used to calculate empirical CDF of images and downsample to a

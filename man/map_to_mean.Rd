@@ -2,18 +2,18 @@
 % Please edit documentation in R/map_to_mean.R
 \name{map_to_mean}
 \alias{map_to_mean}
-\title{Normalize a set of niftis to their Karcher mean}
+\title{Normalize a set of NIfTIs to their Karcher mean}
 \usage{
-map_to_mean(inpaths, outpath, ids, intensity_maximum,
+map_to_mean(inpaths, outpath, ids, intensity_maximum = NULL,
   rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
   grid_length = 100, ...)
 }
 \arguments{
-\item{inpaths}{List of paths to where nifti objects are stored.}
+\item{inpaths}{List of paths to where NIfTI objects are stored.}
 
-\item{outpath}{Directory where mica normalized nifti objects will be stored}
+\item{outpath}{Character, directory where mica normalized NIfTI objects will be stored.}
 
-\item{ids}{List of unique identifiers for each image.}
+\item{ids}{List of unique identifiers for each image. Should be character vector same length as inpaths.}
 
 \item{intensity_maximum}{Maximum value of intensity for creating grid over which to evaluate CDF and
 estimate warping functions. Needs to be chosen based on inspection of data.}
@@ -26,17 +26,19 @@ before it is vectorized.}
 \item{type}{If white_stripe = TRUE, user must specify the type of image, from options
 \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
 
-\item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
+\item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}.}
 
 \item{...}{Additional arguments passed to or from other functions.}
+
+\item{normalized}{\code{TRUE} if image was previously intensity normalized, \code{FALSE} otherwise}
 }
 \value{
 a data frame of vectorized images with columns \code{intensity}, \code{id},
 \code{site}, and \code{scan}, \code{cdf}.
 }
 \description{
-This function reads in filepaths for a set of niftis and outputs mica-normalized niftis to a specified folder.
-Also returns dataframes of vectorized niftis and warping functions.
+This function reads in filepaths for a set of NIfTIs and outputs mica-normalized NIfTIs to a specified folder.
+Also returns data frames of vectorized NIfTIs and warping functions.
 }
 \examples{
 \dontrun{
