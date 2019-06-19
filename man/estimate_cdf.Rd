@@ -2,10 +2,16 @@
 % Please edit documentation in R/estimate_cdf.R
 \name{estimate_cdf}
 \alias{estimate_cdf}
-\title{Calulate eCDF and downsample to regular grid}
+\title{Calulate eCDF and downsample to regular grid.}
 \usage{
+<<<<<<< HEAD
 estimate_cdf(intensity_df, intensity_maximum = NULL,
   rescale_intensities = FALSE, grid_length = 100, ...)
+=======
+estimate_cdf(intensity_df, intensity_maximum,
+  rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
+  grid_length = 100, ...)
+>>>>>>> 22e24694a8abe9a228eecfcd9710b69fd24cd67a
 }
 \arguments{
 \item{intensity_df}{Dataframe of vectorized intensity values.}
@@ -27,5 +33,5 @@ Defaults to \code{FALSE}.}
 }
 \description{
 Function used to calculate empirical CDF of images and downsample to a
-100-point grid of regularly-spaced intensity values.
+grid of regularly-spaced intensity values.
 }

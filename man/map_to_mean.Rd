@@ -2,7 +2,11 @@
 % Please edit documentation in R/map_to_mean.R
 \name{map_to_mean}
 \alias{map_to_mean}
+<<<<<<< HEAD
 \title{Normalize a set of NIfTIs to their Karcher mean}
+=======
+\title{Normalize a set of niftis to their Karcher mean.}
+>>>>>>> 22e24694a8abe9a228eecfcd9710b69fd24cd67a
 \usage{
 map_to_mean(inpaths, outpath, ids, intensity_maximum = NULL,
   rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,

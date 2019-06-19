@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #' Normalize a set of NIfTIs to their Karcher mean
+=======
+#' Normalize a set of niftis to their Karcher mean.
+>>>>>>> 22e24694a8abe9a228eecfcd9710b69fd24cd67a
 #'
 #' This function reads in filepaths for a set of NIfTIs and outputs mica-normalized NIfTIs to a specified folder.
 #' Also returns data frames of vectorized NIfTIs and warping functions.
