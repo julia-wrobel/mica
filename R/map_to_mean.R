@@ -60,7 +60,7 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
 
   # estimate warping
   srvf_obj = suppressMessages(time_warping(cdfs$cdf_mat, time = intensity_grid,
-                                           showplot = FALSE))
+                                           showplot = TRUE))
 
   intensity_df_short = tibble(
     id = rep(cdfs$intensity_df$id, each = grid_length),

@@ -4,9 +4,15 @@
 \alias{estimate_cdf}
 \title{Calulate eCDF and downsample to regular grid.}
 \usage{
-estimate_cdf(intensity_df, intensity_maximum,
-  rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
-  grid_length = 100, ...)
+estimate_cdf(
+  intensity_df,
+  intensity_maximum,
+  rescale_intensities = FALSE,
+  white_stripe = FALSE,
+  type = NULL,
+  grid_length = 100,
+  ...
+)
 }
 \arguments{
 \item{intensity_df}{Dataframe of vectorized intensity values.}

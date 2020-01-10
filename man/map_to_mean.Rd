@@ -4,9 +4,17 @@
 \alias{map_to_mean}
 \title{Normalize a set of niftis to their Karcher mean.}
 \usage{
-map_to_mean(inpaths, outpath, ids, intensity_maximum,
-  rescale_intensities = FALSE, white_stripe = FALSE, type = NULL,
-  grid_length = 100, ...)
+map_to_mean(
+  inpaths,
+  outpath,
+  ids,
+  intensity_maximum,
+  rescale_intensities = FALSE,
+  white_stripe = FALSE,
+  type = NULL,
+  grid_length = 100,
+  ...
+)
 }
 \arguments{
 \item{inpaths}{List of paths to where nifti objects are stored.}

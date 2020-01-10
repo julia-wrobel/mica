@@ -39,5 +39,6 @@ vectorize_image <- function(filepath, site_scan_id = NULL,
   df$scan = strsplit(site_scan_id, "_")[[1]][2]
   df$voxel_position = row.names(df)
 
-  filter(df, intensity > min(intensity))
+  #filter(df, intensity > min(intensity))
+  filter(df, intensity > 0) # 0 is the value for skull
 }

@@ -4,8 +4,13 @@
 \alias{vectorize_image}
 \title{Vectorize and name nifti object}
 \usage{
-vectorize_image(filepath, site_scan_id = NULL, white_stripe = FALSE,
-  type = NULL, ...)
+vectorize_image(
+  filepath,
+  site_scan_id = NULL,
+  white_stripe = FALSE,
+  type = NULL,
+  ...
+)
 }
 \arguments{
 \item{filepath}{Path to where nifti object is stored.}

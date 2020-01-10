@@ -16,7 +16,7 @@
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom purrr map2 map_df
-#' @importFrom tibble as.tibble
+#' @importFrom tibble as_tibble
 #'
 #' @author Julia Wrobel \email{jw3134@@cumc.columbia.edu}
 #'
@@ -50,5 +50,5 @@ make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL,
 
   intensities = map_df(intensities, rbind)
 
-  as.tibble(intensities)
+  as_tibble(intensities)
 }

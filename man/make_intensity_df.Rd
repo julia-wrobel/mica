@@ -4,8 +4,15 @@
 \alias{make_intensity_df}
 \title{create labeled dataframe of vectorized voxel intensities for a list of nifti objects}
 \usage{
-make_intensity_df(filepaths, ids, sitenames = NULL, scan_nos = NULL,
-  white_stripe = FALSE, type = NULL, ...)
+make_intensity_df(
+  filepaths,
+  ids,
+  sitenames = NULL,
+  scan_nos = NULL,
+  white_stripe = FALSE,
+  type = NULL,
+  ...
+)
 }
 \arguments{
 \item{filepaths}{List of paths to where nifti objects are stored.}

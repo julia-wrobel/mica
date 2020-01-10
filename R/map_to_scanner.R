@@ -74,8 +74,9 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = N
                             cdf = as.vector(cdfs$cdf_mat),
                             intensity = as.vector(cdfs$intensity_mat))
 
-  intensity_df_short = intensity_df_short %>% nest(-id, -site) %>%
-    spread(site, data)
+  intensity_df_short = intensity_df_short %>%
+    nest(data = c(cdf, intensity)) %>%
+    pivot_wider(names_from = site, values_from = data)
 
   # estimate warping
   gam = matrix(NA, nrow = grid_length, ncol = num_subjs)
@@ -89,24 +90,23 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = N
     gam[,i] = warp_obj$gam
   }
 
-  # identify mapping labels correctly
-  which_map_to = which(sort(unique(scanner)) == map_to)
-
-  intensity_df_short = intensity_df_short %>% unnest()
-  intensity_df_short[[map_to]] = if(which_map_to == 2) {
-    intensity_df_short$cdf1}else{intensity_df_short$cdf}
-  intensity_df_short[[map_from]] = if(which_map_to == 2) {
-    intensity_df_short$cdf}else{intensity_df_short$cdf1}
+  intensity_df_short = intensity_df_short %>% unnest(cols = c(prisma)) %>%
+    rename(prisma = cdf, intensity_prisma = intensity) %>%
+    nest(prisma = c(prisma, intensity_prisma)) %>%
+    unnest(cols = c(trio, prisma)) %>%
+    rename(trio = cdf, intensity_trio = intensity)
 
   # calculate inverse warping functions
   intensity_df_short = intensity_df_short %>%
-    select(-cdf, -cdf1, -intensity1) %>% # intensities are the same for both scanners
+    select( -intensity_trio) %>% # intensities are the same for both scanners
+    rename(intensity = intensity_prisma) %>%
     mutate(gam = as.vector(gam)) %>%
-    nest(-id) %>%
+    nest(data = c(trio, prisma, intensity, gam)) %>%
     mutate(data = map(data, inverse_warps)) %>%
-    unnest() %>%
+    unnest(cols = c(data)) %>%
     gather(site, cdf, map_to:map_from) %>%
-    nest(-id, -site) %>% arrange(id, site)
+    nest(data = c(intensity, gam, h_inv, cdf)) %>%
+    arrange(id, site)
 
   # upsample inverse warping functions
   intensity_df = intensity_df %>%

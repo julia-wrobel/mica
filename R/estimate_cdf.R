@@ -50,7 +50,7 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
   }
 
   intensity_df = intensity_df %>%
-    nest(-id, -site, -scan) %>%
+    nest(data = c(intensity, voxel_position)) %>%
     mutate(data = map(data, calculate_cdf))
 
   # downsample cdf to smaller, regular grid
@@ -64,7 +64,7 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
     }
     cdf_mat[, i] = approx(intensity_df$data[[i]]$intensity,
                           intensity_df$data[[i]]$cdf,
-                          xout = intensity_grid, rule = 2)$y
+                          xout = intensity_grid, rule = 2, ties = mean)$y
 
     intensity_mat[, i] = intensity_grid
   }
