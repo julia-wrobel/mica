@@ -10,8 +10,6 @@ map_to_mean(
   ids,
   intensity_maximum,
   rescale_intensities = FALSE,
-  white_stripe = FALSE,
-  type = NULL,
   grid_length = 100,
   ...
 )
@@ -27,12 +25,6 @@ map_to_mean(
 estimate warping functions. Needs to be chosen based on inspection of data.}
 
 \item{rescale_intensities}{If \code{TRUE}, intensities will be rescaled by their 99.9 percent quantile.}
-
-\item{white_stripe}{If \code{TRUE} image will be white stripe normalized
-before it is vectorized.}
-
-\item{type}{If white_stripe = TRUE, user must specify the type of image, from options
-\code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
 
 \item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
 

@@ -6,10 +6,6 @@
 #' @param filepath Path to where nifti object is stored.
 #' @param site_scan_id Character valued ID for site, scan number, and id in the format
 #' site_scannumber_id.
-#' @param white_stripe If \code{TRUE} image will be white stripe normalized
-#' before it is vectorized.
-#' @param type If \code{white_stripe = TRUE}, user must specify the type of image, from options
-#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom WhiteStripe whitestripe whitestripe_norm
@@ -22,14 +18,8 @@
 #' @export
 
 vectorize_image <- function(filepath, site_scan_id = NULL,
-                            white_stripe = FALSE, type = NULL, ...){
+                            filter_skull = TRUE, ...){
   nifti_object = readnii(filepath)
-
-  if(white_stripe){
-    ind = whitestripe(img = nifti_object, type = type,
-                      stripped = TRUE)$whitestripe.ind
-    nifti_object = whitestripe_norm(nifti_object, indices = ind)
-  }
 
   df = data.frame(value = c(nifti_object))
   colnames(df) = "intensity"
@@ -39,6 +29,6 @@ vectorize_image <- function(filepath, site_scan_id = NULL,
   df$scan = strsplit(site_scan_id, "_")[[1]][2]
   df$voxel_position = row.names(df)
 
-  #filter(df, intensity > min(intensity))
-  filter(df, intensity > 0) # 0 is the value for skull
+  filter(df, intensity > 0)
+  #filter(df, intensity != round(0, 1)) # 0 is the value for skull
 }

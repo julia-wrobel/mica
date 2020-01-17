@@ -12,8 +12,6 @@ map_to_scanner(
   intensity_maximum = NULL,
   map_from,
   map_to,
-  white_stripe = FALSE,
-  type = NULL,
   grid_length = 100,
   ...
 )
@@ -33,12 +31,6 @@ estimate warping functions. Needs to be chosen based on inspection of data.}
 \item{map_from}{Character, name of scanner from which images will be mapped.}
 
 \item{map_to}{Character, name of scanner to which images will be mapped.}
-
-\item{white_stripe}{If \code{TRUE} image will be white stripe normalized
-before it is vectorized.}
-
-\item{type}{If white_stripe = TRUE, user must specify the type of image, from options
-\code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
 
 \item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
 

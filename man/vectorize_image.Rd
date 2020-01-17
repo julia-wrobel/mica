@@ -4,25 +4,13 @@
 \alias{vectorize_image}
 \title{Vectorize and name nifti object}
 \usage{
-vectorize_image(
-  filepath,
-  site_scan_id = NULL,
-  white_stripe = FALSE,
-  type = NULL,
-  ...
-)
+vectorize_image(filepath, site_scan_id = NULL, filter_skull = TRUE, ...)
 }
 \arguments{
 \item{filepath}{Path to where nifti object is stored.}
 
 \item{site_scan_id}{Character valued ID for site, scan number, and id in the format
 site_scannumber_id.}
-
-\item{white_stripe}{If \code{TRUE} image will be white stripe normalized
-before it is vectorized.}
-
-\item{type}{If \code{white_stripe = TRUE}, user must specify the type of image, from options
-\code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }

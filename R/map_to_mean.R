@@ -9,10 +9,6 @@
 #' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
 #' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9 percent quantile.
-#' @param white_stripe If \code{TRUE} image will be white stripe normalized
-#' before it is vectorized.
-#' @param type If white_stripe = TRUE, user must specify the type of image, from options
-#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
 #'
@@ -41,7 +37,7 @@
 #' @export
 
 map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intensities = FALSE,
-                        white_stripe = FALSE, type = NULL, grid_length = 100, ...){
+                        grid_length = 100, ...){
 
   if(white_stripe){
     if(is.null(type)){
@@ -82,19 +78,6 @@ map_to_mean <- function(inpaths, outpath, ids, intensity_maximum, rescale_intens
            data = map2(data, short_data, upsample_hinv)) %>%
     select(-short_data)
 
-  if(white_stripe){
-    intensity_df = intensity_df %>%
-      unnest(data) %>%
-      mutate(h_inv = h_inv + min(intensity_ws))
-
-    intensity_df_short = intensity_df_short %>%
-      unnest(data) %>%
-      mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
-             h_inv = h_inv + min(intensity_df$intensity_ws)) %>%
-      nest(-id, -site, -scan)
-
-    intensity_df = intensity_df %>% nest(-id, -site, -scan)
-  }
 
   # last step is normalizing the niftis themselves
   hinv_ls = list(as.list(inpaths), as.list(ids), intensity_df$data)

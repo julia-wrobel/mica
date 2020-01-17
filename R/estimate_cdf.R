@@ -7,10 +7,6 @@
 #' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
 #' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
-#' Defaults to \code{FALSE}.
-#' @param white_stripe If \code{TRUE} image will be white stripe normalized
-#' @param type If \code{white_stripe = TRUE}, user must specify the type of image, from options
-#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
 #'
@@ -22,7 +18,7 @@
 #'
 #' @export
 estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE,
-                         white_stripe = FALSE, type = NULL, grid_length = 100, ...){
+                         grid_length = 100, ...){
 
   # test that length of intensity_maximum is either 1 or length of unique ids
   if(rescale_intensities){ # if not whitestriping or if intensities are very different across images, rescale intensities so warping functions are identifiable
@@ -39,15 +35,15 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
     #   ungroup()
   }
 
-  if(white_stripe){
-    if(is.null(type)){
-      stop("Input type of image to whitestripe.")
-    }
-
-    intensity_df = intensity_df %>%
-      mutate(intensity_ws = intensity,
-             intensity = intensity - min(intensity))
-  }
+  # if(white_stripe){
+  #   if(is.null(type)){
+  #     stop("Input type of image to whitestripe.")
+  #   }
+  #
+  #   intensity_df = intensity_df %>%
+  #     mutate(intensity_ws = intensity,
+  #            intensity = intensity - min(intensity))
+  # }
 
   intensity_df = intensity_df %>%
     nest(data = c(intensity, voxel_position)) %>%

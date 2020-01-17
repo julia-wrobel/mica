@@ -11,10 +11,6 @@
 #' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param map_from Character, name of scanner from which images will be mapped.
 #' @param map_to Character, name of scanner to which images will be mapped.
-#' @param white_stripe If \code{TRUE} image will be white stripe normalized
-#' before it is vectorized.
-#' @param type If white_stripe = TRUE, user must specify the type of image, from options
-#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
 #' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
 #' @param ... Additional arguments passed to or from other functions.
 #'
@@ -29,21 +25,15 @@
 #' @export
 
 map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = NULL, map_from, map_to,
-                           white_stripe = FALSE, type = NULL, grid_length = 100, ...){
+                           grid_length = 100, ...){
 
   # can only warp from one scanner to another - not from multiple scanners to another
   # test that map to and map from variables are same as in scanner variable
 
   num_subjs = length(unique(ids))
 
-  if(white_stripe){
-    if(is.null(type)){
-      stop("Input type of image to whitestripe.")
-    }
-  }
 
-  intensity_df = make_intensity_df(inpaths, ids, white_stripe = white_stripe,
-                                   type = type, sitenames = scanner)
+  intensity_df = make_intensity_df(inpaths, ids, sitenames = scanner)
 
   # add intensity_maxima to the dataset
   # intensity_maxima = intensity_df %>%
@@ -64,7 +54,6 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = N
 
   cdfs = estimate_cdf(intensity_df, intensity_maximum,
                       rescale_intensities = FALSE,
-                      white_stripe = white_stripe, type = type,
                       grid_length = grid_length)
 
   intensity_df = cdfs$intensity_df
@@ -114,19 +103,19 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = N
            data = map2(data, short_data, upsample_hinv)) %>%
     select(-short_data) %>% arrange(id, site)
 
-  if(white_stripe){
-    intensity_df = intensity_df %>%
-      unnest(data) %>%
-      mutate(h_inv = h_inv + min(intensity_ws))
-
-    intensity_df_short = intensity_df_short %>%
-      unnest(data) %>%
-      mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
-             h_inv = h_inv + min(intensity_df$intensity_ws)) %>%
-      nest(-id, -site)
-
-    intensity_df = intensity_df %>% nest(-id, -site, -scan)
-  }
+  # if(white_stripe){
+  #   intensity_df = intensity_df %>%
+  #     unnest(data) %>%
+  #     mutate(h_inv = h_inv + min(intensity_ws))
+  #
+  #   intensity_df_short = intensity_df_short %>%
+  #     unnest(data) %>%
+  #     mutate(intensity_ws = intensity + min(intensity_df$intensity_ws),
+  #            h_inv = h_inv + min(intensity_df$intensity_ws)) %>%
+  #     nest(-id, -site)
+  #
+  #   intensity_df = intensity_df %>% nest(-id, -site, -scan)
+  # }
 
   # last step is normalizing the niftis themselves
   map_from_inpaths = inpaths[which(scanner != map_to)]
