@@ -32,7 +32,6 @@ map_to_scanner <- function(inpaths, outpath, ids, scanner, intensity_maximum = N
 
   num_subjs = length(unique(ids))
 
-
   intensity_df = make_intensity_df(inpaths, ids, sitenames = scanner)
 
   # add intensity_maxima to the dataset

@@ -45,10 +45,7 @@ make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL,
   if(is.null(scan_nos)) scan_nos = rep("1", length(filepaths))
 
   site_scan_id = paste(sitenames, scan_nos, ids, sep = "_")
-  intensities = map2(filepaths, site_scan_id, vectorize_image,
-                     white_stripe = white_stripe, type = type)
-
-  intensities = map_df(intensities, rbind)
+  intensities = map2_dfr(filepaths, site_scan_id, vectorize_image)
 
   as_tibble(intensities)
 }

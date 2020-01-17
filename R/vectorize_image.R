@@ -21,14 +21,20 @@ vectorize_image <- function(filepath, site_scan_id = NULL,
                             filter_skull = TRUE, ...){
   nifti_object = readnii(filepath)
 
-  df = data.frame(value = c(nifti_object))
-  colnames(df) = "intensity"
+  df = data.frame(intensity = c(nifti_object))
 
   df$id = strsplit(site_scan_id, "_")[[1]][3]
   df$site = strsplit(site_scan_id, "_")[[1]][1]
   df$scan = strsplit(site_scan_id, "_")[[1]][2]
   df$voxel_position = row.names(df)
 
-  filter(df, intensity > 0)
-  #filter(df, intensity != round(0, 1)) # 0 is the value for skull
+  df = filter(df, intensity != 0)
+  # want it to filter the zeros, add minimym value, store minimum value
+
+  if(min(df$intensity) < 0){
+    df = mutate(df, intensity = intensity - min(intensity))
+  }
+
+  df
 }
+
