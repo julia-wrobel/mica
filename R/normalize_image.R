@@ -24,7 +24,7 @@ normalize_image = function(filepath, id, data, outpath, ...){
   nifti_unnorm = readnii(filepath)
 
   nifti_vec = data.frame(intensity = c(nifti_unnorm))
-  nifti_vec$intensity[which(nifti_vec$intensity > 0)] = data[["h_inv"]]
+  nifti_vec$intensity[which(nifti_vec$intensity != 0)] = data[["h_inv"]]
 
   nifti_norm = niftiarr(img = nifti_unnorm, nifti_vec$intensity)
   new_filename = paste0(outpath, "/", id, "_mica.nii.gz")

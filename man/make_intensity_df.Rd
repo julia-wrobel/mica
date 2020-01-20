@@ -4,31 +4,13 @@
 \alias{make_intensity_df}
 \title{create labeled dataframe of vectorized voxel intensities for a list of nifti objects}
 \usage{
-make_intensity_df(
-  filepaths,
-  ids,
-  sitenames = NULL,
-  scan_nos = NULL,
-  white_stripe = FALSE,
-  type = NULL,
-  ...
-)
+make_intensity_df(filepaths, site_id, ...)
 }
 \arguments{
 \item{filepaths}{List of paths to where nifti objects are stored.}
 
-\item{ids}{List of unique identifiers for each image.}
-
-\item{sitenames}{List of character valued IDs for imaging site.}
-
-\item{scan_nos}{List of character valued IDs for scan number. If NULL, scan number will
-be assumed to be 1.}
-
-\item{white_stripe}{If \code{TRUE} image will be white stripe normalized
-before it is vectorized}
-
-\item{type}{If \code{white_stripe = TRUE}, user must specify the type of image, from options
-\code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.}
+\item{site_id}{Character valued ID for site, and id in the format
+site_id.}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }

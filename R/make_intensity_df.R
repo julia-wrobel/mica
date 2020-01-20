@@ -5,14 +5,8 @@
 #' image.
 #'
 #' @param filepaths List of paths to where nifti objects are stored.
-#' @param ids List of unique identifiers for each image.
-#' @param sitenames List of character valued IDs for imaging site.
-#' @param scan_nos List of character valued IDs for scan number. If NULL, scan number will
-#' be assumed to be 1.
-#' @param white_stripe If \code{TRUE} image will be white stripe normalized
-#' before it is vectorized
-#' @param type If \code{white_stripe = TRUE}, user must specify the type of image, from options
-#' \code{type = c("T1", "T2", "FA", "MD", "first", "last", "largest")}.
+#' @param site_id Character valued ID for site, and id in the format
+#' site_id.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom purrr map2 map_df
@@ -35,17 +29,9 @@
 #' \code{site}, and \code{scan}, \code{cdf}.
 #' @export
 
-make_intensity_df <- function(filepaths, ids, sitenames = NULL, scan_nos = NULL,
-                              white_stripe = FALSE, type = NULL, ...){
+make_intensity_df <- function(filepaths, site_id, ...){
 
-  # for testing filepaths, sitenames, scan_nos, ids should all have the same length and
-    #should be lists
-  # also test that if sitenames and scan_nos is null you don't through an error
-  if(is.null(sitenames)) sitenames = rep("site", length(filepaths))
-  if(is.null(scan_nos)) scan_nos = rep("1", length(filepaths))
-
-  site_scan_id = paste(sitenames, scan_nos, ids, sep = "_")
-  intensities = map2_dfr(filepaths, site_scan_id, vectorize_image)
+  intensities = map2_dfr(filepaths, site_id, vectorize_image)
 
   as_tibble(intensities)
 }
