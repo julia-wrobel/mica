@@ -16,7 +16,7 @@
 #' @return a data frame with a single vectorized image.
 #' @export
 
-vectorize_image <- function(filepath, site_id = NULL,
+vectorize_image <- function(filepath, site_id,
                             filter_skull = TRUE, ...){
   nifti_object = readnii(filepath)
 
