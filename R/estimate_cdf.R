@@ -4,6 +4,8 @@
 #' grid of regularly-spaced intensity values.
 #'
 #' @param intensity_df Dataframe of vectorized intensity values.
+#' @param intensity_minimum Minimum value of intensity for creating grid.
+#' Normally 0, can be lower if data has been White Striped.
 #' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
 #' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
@@ -17,8 +19,9 @@
 #' @importFrom stats quantile
 #'
 #' @export
-estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = FALSE,
-                         grid_length = 100, ...){
+estimate_cdf <- function(intensity_df, intensity_minimum, intensity_maximum,
+                         rescale_intensities = FALSE,
+                         grid_length = 1000, ...){
 
   # test that length of intensity_maximum is either 1 or length of unique ids
   if(rescale_intensities){ # if not whitestriping or if intensities are very different across images, rescale intensities so warping functions are identifiable
@@ -54,9 +57,9 @@ estimate_cdf <- function(intensity_df, intensity_maximum, rescale_intensities = 
 
   for(i in 1:dim(intensity_df)[1]){
     if(length(intensity_maximum) > 1){
-      intensity_grid = seq(0, intensity_maximum[i], length.out = grid_length)
+      intensity_grid = seq(intensity_minimum, intensity_maximum[i], length.out = grid_length)
     }else{
-      intensity_grid = seq(0, intensity_maximum, length.out = grid_length)
+      intensity_grid = seq(intensity_minimum, intensity_maximum, length.out = grid_length)
     }
     cdf_mat[, i] = approx(intensity_df$data[[i]]$intensity,
                           intensity_df$data[[i]]$cdf,

@@ -5,8 +5,9 @@
 #' image.
 #'
 #' @param filepaths List of paths to where nifti objects are stored.
-#' @param site_id Character valued ID for site, and id in the format
-#' site_id.
+#' @param subj_scan_scanner Character valued ID for subject, scan number, and scanner, in the format
+#' subj_scan_scanner.
+#' @param white_striped Has the data been intensity normalized using White Stripe? Defaults to FALSE.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom purrr map2 map_df
@@ -29,9 +30,9 @@
 #' \code{site}, and \code{scan}, \code{cdf}.
 #' @export
 
-make_intensity_df <- function(filepaths, site_id, ...){
+make_intensity_df <- function(filepaths, subj_scan_scanner, white_striped,...){
 
-  intensities = map2_dfr(filepaths, site_id, vectorize_image)
+  intensities = map2_dfr(filepaths, subj_scan_scanner, vectorize_image, white_striped = white_striped)
 
   as_tibble(intensities)
 }
