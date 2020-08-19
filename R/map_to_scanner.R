@@ -99,8 +99,6 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
     mutate(h_inv = h_inv$h_inv) %>%
     nest(data = c(cdf, intensity, h_inv)) %>% select(-n_warps)
 
-
-
   # upsample inverse warping functions
   intensity_df = rbind(intensity_df %>%
     filter(scanner != map_to) %>%
