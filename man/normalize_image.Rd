@@ -4,17 +4,21 @@
 \alias{normalize_image}
 \title{Normalize and save nifti object}
 \usage{
-normalize_image(filepath, id, data, outpath, ...)
+normalize_image(filepath, subject, scan_id, data, outpath, white_striped, ...)
 }
 \arguments{
 \item{filepath}{Path to where nifti object is stored.}
 
-\item{id}{Unique identifiers for the nifti object.}
+\item{subject}{Unique identifiers for the nifti object.}
+
+\item{scan_id}{Unique identifiers for the nifti object.}
 
 \item{data}{Data frame that includes the variable \code{h_inv}, which is the
 inverse warping function for normalization.}
 
 \item{outpath}{Directory where mica normalized nifti object will be stored.}
+
+\item{white_striped}{Has the data been intensity normalized using White Stripe?}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }
@@ -25,5 +29,5 @@ a data frame with a single vectorized image.
 Function used to mica-normalize nifti object based on inverse warping functions.
 }
 \author{
-Julia Wrobel \email{jw3134@cumc.columbia.edu}
+Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
 }

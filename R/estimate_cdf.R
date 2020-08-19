@@ -4,12 +4,7 @@
 #' grid of regularly-spaced intensity values.
 #'
 #' @param intensity_df Dataframe of vectorized intensity values.
-#' @param intensity_minimum Minimum value of intensity for creating grid.
-#' Normally 0, can be lower if data has been White Striped.
-#' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
-#' estimate warping functions. Needs to be chosen based on inspection of data.
-#' @param rescale_intensities If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.
-#' @param grid_length Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}
+#' @param grid_length Length of downsampled CDFs to be aligned
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
@@ -19,34 +14,8 @@
 #' @importFrom stats quantile
 #'
 #' @export
-estimate_cdf <- function(intensity_df, intensity_minimum, intensity_maximum,
-                         rescale_intensities = FALSE,
+estimate_cdf <- function(intensity_df,
                          grid_length = 1000, ...){
-
-  # test that length of intensity_maximum is either 1 or length of unique ids
-  if(rescale_intensities){ # if not whitestriping or if intensities are very different across images, rescale intensities so warping functions are identifiable
-    intensity_df = intensity_df %>%
-      group_by(id) %>%
-      mutate(quantile99 = quantile(intensity, .999),
-             intensity_raw = intensity,
-             intensity = intensity * intensity_maximum / quantile99) %>%
-      ungroup()
-    # intensity_df = intensity_df %>%
-    #   group_by(id) %>%
-    #   mutate(intensity_raw = intensity,
-    #          intensity = intensity * intensity_max / max(intensity)) %>%
-    #   ungroup()
-  }
-
-  # if(white_stripe){
-  #   if(is.null(type)){
-  #     stop("Input type of image to whitestripe.")
-  #   }
-  #
-  #   intensity_df = intensity_df %>%
-  #     mutate(intensity_ws = intensity,
-  #            intensity = intensity - min(intensity))
-  # }
 
   intensity_df = intensity_df %>%
     nest(data = c(intensity, voxel_position)) %>%
@@ -56,11 +25,11 @@ estimate_cdf <- function(intensity_df, intensity_minimum, intensity_maximum,
   cdf_mat = intensity_mat = matrix(0, nrow = grid_length, ncol = dim(intensity_df)[1])
 
   for(i in 1:dim(intensity_df)[1]){
-    if(length(intensity_maximum) > 1){
-      intensity_grid = seq(intensity_minimum, intensity_maximum[i], length.out = grid_length)
-    }else{
-      intensity_grid = seq(intensity_minimum, intensity_maximum, length.out = grid_length)
-    }
+
+    intensity_minimum = intensity_df$intensity_minimum[i]
+    intensity_maximum = intensity_df$intensity_maximum[i]
+    intensity_grid = seq(intensity_minimum, intensity_maximum, length.out = grid_length)
+
     cdf_mat[, i] = approx(intensity_df$data[[i]]$intensity,
                           intensity_df$data[[i]]$cdf,
                           xout = intensity_grid, rule = 2, ties = mean)$y

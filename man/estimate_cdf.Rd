@@ -4,23 +4,12 @@
 \alias{estimate_cdf}
 \title{Calulate eCDF and downsample to regular grid.}
 \usage{
-estimate_cdf(
-  intensity_df,
-  intensity_maximum,
-  rescale_intensities = FALSE,
-  grid_length = 100,
-  ...
-)
+estimate_cdf(intensity_df, grid_length = 1000, ...)
 }
 \arguments{
 \item{intensity_df}{Dataframe of vectorized intensity values.}
 
-\item{intensity_maximum}{Maximum value of intensity for creating grid over which to evaluate CDF and
-estimate warping functions. Needs to be chosen based on inspection of data.}
-
-\item{rescale_intensities}{If \code{TRUE}, intensities will be rescaled by their 99.9% quantile.}
-
-\item{grid_length}{Length of downsampled CDFs to be aligned via \code{fdasrvf::time_warping()}}
+\item{grid_length}{Length of downsampled CDFs to be aligned}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }

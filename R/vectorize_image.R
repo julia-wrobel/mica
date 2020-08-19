@@ -12,7 +12,7 @@
 #' @importFrom neurobase readnii
 #' @importFrom dplyr filter
 #'
-#' @author Julia Wrobel \email{jw3134@@cumc.columbia.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
 #'
 #' @return a data frame with a single vectorized image.
 #' @export
@@ -28,15 +28,15 @@ vectorize_image <- function(filepath, subj_scan_scanner,
   df$scanner = strsplit(subj_scan_scanner, "_")[[1]][3]
   df$voxel_position = row.names(df)
 
-  # want it to filter the zeros, add minimum value, store minimum value
-  if(white_striped){
-    df = filter(df, intensity != min(intensity))
-  }else if(min(df$intensity) < 0){
-    df = filter(df, intensity != 0)
-    df = mutate(df, intensity = intensity - min(intensity))
-  }else{
-    df = filter(df, intensity != 0)
+  getmode <- function(v) {
+    uniqv <- unique(v)
+    uniqv[which.max(tabulate(match(v, uniqv)))]
   }
+
+  # want it to filter the zeros, add minimum value, store minimum value
+  mode = getmode(df$intensity)
+  df = mutate(df, mode = mode)
+  df = filter(df, intensity != mode)
 
   df
 }

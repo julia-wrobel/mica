@@ -8,13 +8,9 @@
 #' @param subjects List that denotes the subject id for each image. Alignment will occur at the subject level.
 #' @param scan_ids List of unique identifiers for each image.
 #' @param scanner Scanner on which each image was collected. Should be character vector same length as suubjects.
-#' @param intensity_minimum Minimum value of intensity for creating grid.
-#' Normally 0, can be lower if data has been White Striped.
-#' @param intensity_maximum Maximum value of intensity for creating grid over which to evaluate CDF and
-#' estimate warping functions. Needs to be chosen based on inspection of data.
 #' @param map_from Character, name of scanner from which images will be mapped.
 #' @param map_to Character, name of scanner to which images will be mapped.
-#' @param grid_length Length of downsampled CDFs to be aligned
+#' @param grid_length Length of downsampled CDFs to be aligned.
 #' @param white_striped Has the data been intensity normalized using White Stripe? Defaults to FALSE.
 #' @param ... Additional arguments passed to or from other functions.
 #'
@@ -24,11 +20,10 @@
 #' @importFrom magrittr %>%
 #' @importFrom tibble tibble
 #'
-#' @author Julia Wrobel \email{jw3134@@cumc.columbia.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
 #' @export
 
 map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
-                           intensity_minimum = 0, intensity_maximum = NULL,
                            map_from, map_to,
                            grid_length = 1000,
                            white_striped = FALSE, ...){
@@ -40,7 +35,16 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
 
   intensity_df = make_intensity_df(inpaths, subj_scan_scanner, white_striped = white_striped)
 
-  cdfs = estimate_cdf(intensity_df, intensity_minimum, intensity_maximum,
+  intensity_extrema = intensity_df %>%
+    filter(scanner == map_to) %>%
+    group_by(subject) %>%
+    summarize(intensity_minimum = min(intensity),
+              intensity_maximum = max(intensity)) %>%
+    ungroup()
+
+  intensity_df = left_join(intensity_df, intensity_extrema)
+
+  cdfs = estimate_cdf(intensity_df,
                       rescale_intensities = FALSE,
                       grid_length = grid_length)
 
@@ -57,7 +61,7 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
     group_by(subject) %>%
     mutate(n_warps = n_distinct(scan_id) - 1) %>%
     ungroup()
-    #pivot_wider(names_from = scanner, values_from = data)
+
 
   # estimate warping
   total_warps = intensity_df_short %>%
@@ -69,14 +73,14 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
 
   h_inv = matrix(cdfs$intensity_mat[,1], nrow = grid_length, ncol = 1)
   colnames(h_inv) = "intensity"
-  subjects = unique(subjects)
+  uniq_subjects = unique(subjects)
 
   for(i in 1:num_subjects){
-    target = intensity_df_short %>% filter(subject == subjects[i], scanner == map_to)
-    sources = intensity_df_short %>% filter(subject == subjects[i], scanner != map_to)
+    target = intensity_df_short %>% filter(subject == uniq_subjects[i], scanner == map_to)
+    sources = intensity_df_short %>% filter(subject == uniq_subjects[i], scanner != map_to)
 
     for(scan in 1:target$n_warps){
-      tstar = sources$data[[scan]]$intensity
+      tstar = sources$data[[scan]]$intensity ## need to rescale intensity here?
       q_from = quantile(sources$data[[scan]]$cdf, probs = seq(0, 1, length.out = grid_length))
 
       scan_id = sources[scan,]$scan_id
@@ -87,35 +91,40 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
 
   h_inv = h_inv %>% as_tibble() %>%
     gather(scan_id, h_inv, !intensity) %>%
-    select(scan_id, intensity, h_inv)
+    select(scan_id, h_inv)
 
-  intensity_df_short = intensity_df_short %>% unnest(cols = c(data)) %>%
-    left_join(., h_inv) %>%
-    nest(data = c(intensity, h_inv, cdf))  %>%
-    arrange(scan_id, scanner)
+  hinv_df = intensity_df_short %>%
+    filter(scanner == map_from) %>%
+    unnest(cols = c(data)) %>%
+    mutate(h_inv = h_inv$h_inv) %>%
+    nest(data = c(cdf, intensity, h_inv)) %>% select(-n_warps)
+
 
 
   # upsample inverse warping functions
   intensity_df = rbind(intensity_df %>%
     filter(scanner != map_to) %>%
     arrange(scan_id, scanner) %>%
-    mutate(short_data = filter(intensity_df_short, scanner != map_to)$data,
+    mutate(short_data = hinv_df$data,
            data = map2(data, short_data, upsample_hinv)) %>%
-    select(-short_data), (intensity_df %>%
+    select(-short_data),
+    (intensity_df %>%
     filter(scanner == map_to) %>%
     unnest(data) %>%
-    mutate(h_inv = "NA") %>%
-    nest(data = c(intensity, voxel_position, cdf, h_inv)))) %>%
+    mutate(h_inv = NA) %>%
+    nest(data = c(intensity, voxel_position, cdf, h_inv)) )
+    ) %>%
     arrange(scan_id, scanner)
 
   # last step is normalizing the niftis themselves
   map_from_inpaths = inpaths[which(scanner != map_to)]
+  map_from_subjects = subjects[which(scanner != map_to)]
   map_from_scanids = scan_ids[which(scanner != map_to)]
   map_from_df = intensity_df %>% filter(scanner != map_to)
 
-  hinv_ls = list(as.list(map_from_inpaths), as.list(map_from_scanids), map_from_df$data)
+  hinv_ls = list(as.list(map_from_inpaths), as.list(map_from_subjects), as.list(map_from_scanids), map_from_df$data)
   image_norm = pmap(hinv_ls, .f = normalize_image, outpath = outpath, white_striped = white_striped)
 
-  return(list(long_data = intensity_df, short_data = intensity_df_short))
+  return(list(long_data = intensity_df, short_data = intensity_df_short, short_hinv = hinv_df))
 
 } # end function

@@ -7,12 +7,13 @@
 map_to_scanner(
   inpaths,
   outpath,
-  ids,
+  subjects,
+  scan_ids,
   scanner,
-  intensity_maximum = NULL,
   map_from,
   map_to,
   grid_length = 1000,
+  white_striped = FALSE,
   ...
 )
 }
@@ -21,18 +22,19 @@ map_to_scanner(
 
 \item{outpath}{Directory where mica normalized nifti objects will be stored.}
 
-\item{ids}{List of unique identifiers for each subject.}
+\item{subjects}{List that denotes the subject id for each image. Alignment will occur at the subject level.}
 
-\item{scanner}{Scanner on which each image was collected. Should be character vector same length as ids.}
+\item{scan_ids}{List of unique identifiers for each image.}
 
-\item{intensity_maximum}{Maximum value of intensity for creating grid over which to evaluate CDF and
-estimate warping functions. Needs to be chosen based on inspection of data.}
+\item{scanner}{Scanner on which each image was collected. Should be character vector same length as suubjects.}
 
 \item{map_from}{Character, name of scanner from which images will be mapped.}
 
 \item{map_to}{Character, name of scanner to which images will be mapped.}
 
-\item{grid_length}{Length of downsampled CDFs to be aligned}
+\item{grid_length}{Length of downsampled CDFs to be aligned.}
+
+\item{white_striped}{Has the data been intensity normalized using White Stripe? Defaults to FALSE.}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }
@@ -41,5 +43,5 @@ This function reads in filepaths for a set of niftis from two scanners and maps 
 other.
 }
 \author{
-Julia Wrobel \email{jw3134@cumc.columbia.edu}
+Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
 }
