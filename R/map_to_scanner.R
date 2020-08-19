@@ -11,7 +11,6 @@
 #' @param map_from Character, name of scanner from which images will be mapped.
 #' @param map_to Character, name of scanner to which images will be mapped.
 #' @param grid_length Length of downsampled CDFs to be aligned.
-#' @param white_striped Has the data been intensity normalized using White Stripe? Defaults to FALSE.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @import dplyr
@@ -25,15 +24,14 @@
 
 map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
                            map_from, map_to,
-                           grid_length = 1000,
-                           white_striped = FALSE, ...){
+                           grid_length = 1000, ...){
 
   # can only warp from one scanner to another - not from multiple scanners to another
   # test that map to and map from variables are same as in scanner variable
 
   subj_scan_scanner = paste(subjects, scan_ids, scanner, sep = "_")
 
-  intensity_df = make_intensity_df(inpaths, subj_scan_scanner, white_striped = white_striped)
+  intensity_df = make_intensity_df(inpaths, subj_scan_scanner)
 
   intensity_extrema = intensity_df %>%
     filter(scanner == map_to) %>%
@@ -45,7 +43,6 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
   intensity_df = left_join(intensity_df, intensity_extrema)
 
   cdfs = estimate_cdf(intensity_df,
-                      rescale_intensities = FALSE,
                       grid_length = grid_length)
 
   intensity_df = cdfs$intensity_df
@@ -121,7 +118,7 @@ map_to_scanner <- function(inpaths, outpath, subjects, scan_ids, scanner,
   map_from_df = intensity_df %>% filter(scanner != map_to)
 
   hinv_ls = list(as.list(map_from_inpaths), as.list(map_from_subjects), as.list(map_from_scanids), map_from_df$data)
-  image_norm = pmap(hinv_ls, .f = normalize_image, outpath = outpath, white_striped = white_striped)
+  image_norm = pmap(hinv_ls, .f = normalize_image, outpath = outpath)
 
   return(list(long_data = intensity_df, short_data = intensity_df_short, short_hinv = hinv_df))
 

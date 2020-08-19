@@ -10,16 +10,14 @@
 #' @import dplyr
 #' @importFrom tidyr nest unnest
 #' @importFrom purrr map
-#' @importFrom magrittr %>%
 #' @importFrom stats quantile
 #'
 #' @export
 estimate_cdf <- function(intensity_df,
                          grid_length = 1000, ...){
 
-  intensity_df = intensity_df %>%
-    nest(data = c(intensity, voxel_position)) %>%
-    mutate(data = map(data, calculate_cdf))
+  intensity_df = nest(intensity_df, data = c(intensity, voxel_position))
+  intensity_df = mutate(intensity_df, data = map(data, calculate_cdf))
 
   # downsample cdf to smaller, regular grid
   cdf_mat = intensity_mat = matrix(0, nrow = grid_length, ncol = dim(intensity_df)[1])

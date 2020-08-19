@@ -1,12 +1,11 @@
 #' Vectorize and name nifti object
 #'
 #' Function used to read in nifti object, vectorize, and place in a
-#' dataframe. Option to whitestripe normalize image if desired.
+#' dataframe.
 #'
 #' @param filepath Path to where nifti object is stored.
 #' @param subj_scan_scanner Character valued ID for subject, scan number, and scanner, in the format
 #' subj_scan_scanner.
-#' @param white_striped Has the data been intensity normalized using White Stripe? Defaults to FALSE.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom neurobase readnii
@@ -17,8 +16,7 @@
 #' @return a data frame with a single vectorized image.
 #' @export
 
-vectorize_image <- function(filepath, subj_scan_scanner,
-                            white_striped, ...){
+vectorize_image <- function(filepath, subj_scan_scanner, ...){
   nifti_object = readnii(filepath)
 
   df = data.frame(intensity = c(nifti_object))
@@ -33,7 +31,6 @@ vectorize_image <- function(filepath, subj_scan_scanner,
     uniqv[which.max(tabulate(match(v, uniqv)))]
   }
 
-  # want it to filter the zeros, add minimum value, store minimum value
   mode = getmode(df$intensity)
   df = mutate(df, mode = mode)
   df = filter(df, intensity != mode)

@@ -4,15 +4,13 @@
 \alias{make_intensity_df}
 \title{create labeled dataframe of vectorized voxel intensities for a list of nifti objects}
 \usage{
-make_intensity_df(filepaths, subj_scan_scanner, white_striped, ...)
+make_intensity_df(filepaths, subj_scan_scanner, ...)
 }
 \arguments{
 \item{filepaths}{List of paths to where nifti objects are stored.}
 
 \item{subj_scan_scanner}{Character valued ID for subject, scan number, and scanner, in the format
 subj_scan_scanner.}
-
-\item{white_striped}{Has the data been intensity normalized using White Stripe? Defaults to FALSE.}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }
@@ -38,5 +36,5 @@ intensity_data = make_intensities_df(filenames, ids, sitenames, scan_nos)
 
 }
 \author{
-Julia Wrobel \email{jw3134@cumc.columbia.edu}
+Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
 }

@@ -4,7 +4,7 @@
 \alias{normalize_image}
 \title{Normalize and save nifti object}
 \usage{
-normalize_image(filepath, subject, scan_id, data, outpath, white_striped, ...)
+normalize_image(filepath, subject, scan_id, data, outpath, ...)
 }
 \arguments{
 \item{filepath}{Path to where nifti object is stored.}
@@ -17,8 +17,6 @@ normalize_image(filepath, subject, scan_id, data, outpath, white_striped, ...)
 inverse warping function for normalization.}
 
 \item{outpath}{Directory where mica normalized nifti object will be stored.}
-
-\item{white_striped}{Has the data been intensity normalized using White Stripe?}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }

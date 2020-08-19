@@ -4,15 +4,13 @@
 \alias{vectorize_image}
 \title{Vectorize and name nifti object}
 \usage{
-vectorize_image(filepath, subj_scan_scanner, white_striped, ...)
+vectorize_image(filepath, subj_scan_scanner, ...)
 }
 \arguments{
 \item{filepath}{Path to where nifti object is stored.}
 
 \item{subj_scan_scanner}{Character valued ID for subject, scan number, and scanner, in the format
 subj_scan_scanner.}
-
-\item{white_striped}{Has the data been intensity normalized using White Stripe? Defaults to FALSE.}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }
@@ -21,7 +19,7 @@ a data frame with a single vectorized image.
 }
 \description{
 Function used to read in nifti object, vectorize, and place in a
-dataframe. Option to whitestripe normalize image if desired.
+dataframe.
 }
 \author{
 Julia Wrobel \email{julia.wrobel@cuanschutz.edu}

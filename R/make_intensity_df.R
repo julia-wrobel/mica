@@ -7,13 +7,12 @@
 #' @param filepaths List of paths to where nifti objects are stored.
 #' @param subj_scan_scanner Character valued ID for subject, scan number, and scanner, in the format
 #' subj_scan_scanner.
-#' @param white_striped Has the data been intensity normalized using White Stripe? Defaults to FALSE.
 #' @param ... Additional arguments passed to or from other functions.
 #'
 #' @importFrom purrr map2 map_df
 #' @importFrom tibble as_tibble
 #'
-#' @author Julia Wrobel \email{jw3134@@cumc.columbia.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
 #'
 #' @examples
 ##' \dontrun{
@@ -30,9 +29,9 @@
 #' \code{site}, and \code{scan}, \code{cdf}.
 #' @export
 
-make_intensity_df <- function(filepaths, subj_scan_scanner, white_striped,...){
+make_intensity_df <- function(filepaths, subj_scan_scanner,...){
 
-  intensities = map2_dfr(filepaths, subj_scan_scanner, vectorize_image, white_striped = white_striped)
+  intensities = map2_dfr(filepaths, subj_scan_scanner, vectorize_image)
 
   as_tibble(intensities)
 }

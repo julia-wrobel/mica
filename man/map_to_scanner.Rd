@@ -13,7 +13,6 @@ map_to_scanner(
   map_from,
   map_to,
   grid_length = 1000,
-  white_striped = FALSE,
   ...
 )
 }
@@ -33,8 +32,6 @@ map_to_scanner(
 \item{map_to}{Character, name of scanner to which images will be mapped.}
 
 \item{grid_length}{Length of downsampled CDFs to be aligned.}
-
-\item{white_striped}{Has the data been intensity normalized using White Stripe? Defaults to FALSE.}
 
 \item{...}{Additional arguments passed to or from other functions.}
 }
