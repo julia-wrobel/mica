@@ -1,5 +1,5 @@
 ---
-title: "mica"
+title: "mica: a vignette"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{mica}
@@ -10,10 +10,35 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
 )
 ```
+
+The `registr` package is for registering, or aligning, exponential family functional data.
 
 ```{r setup}
 library(mica)
 ```
+
+
+## What is `mica`?
+
+talk about harmonization issues, intensity comparability issues, and subject specific effects
+
+
+
+## alignment for traveling subjects
+
+### need to scale things?
+
+
+## alignment for everyone else
+
+explain how loso works
+
+simulate some of this data, otherwise you only have two images which is contrived
+
+
+
